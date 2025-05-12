@@ -1,4 +1,3 @@
-
 import { Expense, ExpenseCategory, CategorySummary, BudgetSummary, TimeFrame } from '@/types/expense';
 import { format, subDays, startOfWeek, startOfMonth, startOfYear, isAfter } from 'date-fns';
 
@@ -84,11 +83,11 @@ export const filterExpensesByTimeFrame = (expenses: Expense[], timeFrame: TimeFr
 };
 
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    currency: 'INR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(amount);
 };
 
