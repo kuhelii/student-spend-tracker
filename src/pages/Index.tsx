@@ -19,7 +19,11 @@ const Index = () => {
             </svg>
           </div>
           <h1 className="text-5xl font-bold text-center mb-4 relative">
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent drop-shadow-md" style={{ textShadow: '0px 1px 2px rgba(0,0,0,0.1)' }}>
+            <span className="bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-md" 
+                  style={{ 
+                    textShadow: '0px 2px 4px rgba(0,0,0,0.15)',
+                    letterSpacing: '0.5px'
+                  }}>
               BudgetBuddy
             </span>
           </h1>
