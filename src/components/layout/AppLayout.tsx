@@ -25,9 +25,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     <div className="min-h-screen bg-gray-50">
       {/* Desktop sidebar */}
       {!isMobile && (
-        <div className="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 shadow-sm">
-          <div className="flex items-center justify-center h-16 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-purple-500">ExpenseTracker</h1>
+        <div className="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-800 to-gray-900 border-r border-gray-700 shadow-lg">
+          <div className="flex items-center justify-center h-16 border-b border-gray-700">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">BudgetBuddy</h1>
           </div>
           
           <nav className="mt-6 px-4">
@@ -35,8 +35,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <li>
                 <Link
                   to="/"
-                  className={`flex items-center px-4 py-3 text-gray-700 rounded-md hover:bg-purple-50 hover:text-purple-700 transition-colors ${
-                    isActivePath('/') ? 'bg-purple-50 text-purple-700 font-medium' : ''
+                  className={`flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition-colors ${
+                    isActivePath('/') ? 'bg-gray-700 text-white font-medium' : 'text-gray-300'
                   }`}
                 >
                   <Wallet className="h-5 w-5 mr-3" />
@@ -46,8 +46,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <li>
                 <Link
                   to="/history"
-                  className={`flex items-center px-4 py-3 text-gray-700 rounded-md hover:bg-purple-50 hover:text-purple-700 transition-colors ${
-                    isActivePath('/history') ? 'bg-purple-50 text-purple-700 font-medium' : ''
+                  className={`flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition-colors ${
+                    isActivePath('/history') ? 'bg-gray-700 text-white font-medium' : 'text-gray-300'
                   }`}
                 >
                   <CalendarDays className="h-5 w-5 mr-3" />
@@ -57,8 +57,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <li>
                 <Link
                   to="/analytics"
-                  className={`flex items-center px-4 py-3 text-gray-700 rounded-md hover:bg-purple-50 hover:text-purple-700 transition-colors ${
-                    isActivePath('/analytics') ? 'bg-purple-50 text-purple-700 font-medium' : ''
+                  className={`flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition-colors ${
+                    isActivePath('/analytics') ? 'bg-gray-700 text-white font-medium' : 'text-gray-300'
                   }`}
                 >
                   <ChartBar className="h-5 w-5 mr-3" />
@@ -68,8 +68,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <li>
                 <Link
                   to="/settings"
-                  className={`flex items-center px-4 py-3 text-gray-700 rounded-md hover:bg-purple-50 hover:text-purple-700 transition-colors ${
-                    isActivePath('/settings') ? 'bg-purple-50 text-purple-700 font-medium' : ''
+                  className={`flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition-colors ${
+                    isActivePath('/settings') ? 'bg-gray-700 text-white font-medium' : 'text-gray-300'
                   }`}
                 >
                   <SettingsIcon className="h-5 w-5 mr-3" />
@@ -90,20 +90,20 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         
         {/* Mobile bottom navigation */}
         {isMobile && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 flex justify-around">
-            <Link to="/" className={`flex flex-col items-center p-2 ${isActivePath('/') ? 'text-purple-600' : 'text-gray-500'}`}>
+          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-800 to-gray-900 px-4 py-2 flex justify-around shadow-lg">
+            <Link to="/" className={`flex flex-col items-center p-2 ${isActivePath('/') ? 'text-blue-400' : 'text-gray-400'}`}>
               <Wallet className="h-6 w-6" />
               <span className="text-xs mt-1">Dashboard</span>
             </Link>
-            <Link to="/history" className={`flex flex-col items-center p-2 ${isActivePath('/history') ? 'text-purple-600' : 'text-gray-500'}`}>
+            <Link to="/history" className={`flex flex-col items-center p-2 ${isActivePath('/history') ? 'text-purple-400' : 'text-gray-400'}`}>
               <CalendarDays className="h-6 w-6" />
               <span className="text-xs mt-1">History</span>
             </Link>
-            <Link to="/analytics" className={`flex flex-col items-center p-2 ${isActivePath('/analytics') ? 'text-purple-600' : 'text-gray-500'}`}>
+            <Link to="/analytics" className={`flex flex-col items-center p-2 ${isActivePath('/analytics') ? 'text-pink-400' : 'text-gray-400'}`}>
               <ChartBar className="h-6 w-6" />
               <span className="text-xs mt-1">Analytics</span>
             </Link>
-            <Link to="/settings" className={`flex flex-col items-center p-2 ${isActivePath('/settings') ? 'text-purple-600' : 'text-gray-500'}`}>
+            <Link to="/settings" className={`flex flex-col items-center p-2 ${isActivePath('/settings') ? 'text-green-400' : 'text-gray-400'}`}>
               <SettingsIcon className="h-6 w-6" />
               <span className="text-xs mt-1">Settings</span>
             </Link>
