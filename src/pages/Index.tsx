@@ -18,7 +18,11 @@ const Index = () => {
               <path d="M4 21H20C21.1046 21 22 20.1046 22 19V5C22 3.89543 21.1046 3 20 3H4C2.89543 3 2 3.89543 2 5V19C2 20.1046 2.89543 21 4 21Z" stroke="white" strokeWidth="2" strokeLinejoin="round"/>
             </svg>
           </div>
-          <h1 className="text-5xl font-bold text-center text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">BudgetBuddy</h1>
+          <h1 className="text-5xl font-bold text-center mb-4 relative">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent drop-shadow-md" style={{ textShadow: '0px 1px 2px rgba(0,0,0,0.1)' }}>
+              BudgetBuddy
+            </span>
+          </h1>
           <p className="text-xl text-center text-gray-600 max-w-2xl">
             Track, analyze, and optimize your expenses with our budget-friendly financial tracker
           </p>
