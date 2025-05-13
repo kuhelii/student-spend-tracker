@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { useForm } from 'react-hook-form';
@@ -7,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -39,6 +37,7 @@ import { cn } from '@/lib/utils';
 import { ExpenseCategory } from '@/types/expense';
 import { useExpense } from '@/context/ExpenseContext';
 import { getCategoryIcon } from '@/lib/expenseUtils';
+import { useAuth } from '@/context/AuthContext';
 
 const formSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
@@ -51,6 +50,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const ExpenseForm: React.FC = () => {
   const { addExpense } = useExpense();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const form = useForm<FormValues>({
@@ -63,10 +63,12 @@ const ExpenseForm: React.FC = () => {
     },
   });
   
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = async (values: FormValues) => {
+    if (!user) return;
+    
     setIsSubmitting(true);
     try {
-      addExpense({
+      await addExpense({
         amount: values.amount,
         description: values.description,
         category: values.category,

@@ -6,8 +6,10 @@ import {
   ChartBar, 
   Wallet, 
   CalendarDays, 
-  Settings as SettingsIcon 
+  Settings as SettingsIcon,
+  LogOut 
 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -16,6 +18,7 @@ interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const { signOut, user } = useAuth();
   
   const isActivePath = (path: string) => {
     return location.pathname === path;
@@ -34,9 +37,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  to="/"
+                  to="/dashboard"
                   className={`flex items-center px-4 py-3 rounded-md hover:bg-gray-700 transition-colors ${
-                    isActivePath('/') ? 'bg-gray-700 text-white font-medium' : 'text-gray-300'
+                    isActivePath('/dashboard') ? 'bg-gray-700 text-white font-medium' : 'text-gray-300'
                   }`}
                 >
                   <Wallet className="h-5 w-5 mr-3" />
@@ -77,6 +80,21 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                 </Link>
               </li>
             </ul>
+
+            {user && (
+              <div className="absolute bottom-8 left-0 right-0 px-4">
+                <div className="px-4 py-2 text-sm text-gray-300 mb-2">
+                  {user.email}
+                </div>
+                <button
+                  onClick={() => signOut()}
+                  className="flex w-full items-center px-4 py-2 rounded-md text-gray-300 hover:bg-gray-700 transition-colors"
+                >
+                  <LogOut className="h-5 w-5 mr-3" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            )}
           </nav>
         </div>
       )}
@@ -91,7 +109,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         {/* Mobile bottom navigation */}
         {isMobile && (
           <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-800 to-gray-900 px-4 py-2 flex justify-around shadow-lg">
-            <Link to="/" className={`flex flex-col items-center p-2 ${isActivePath('/') ? 'text-blue-400' : 'text-gray-400'}`}>
+            <Link to="/dashboard" className={`flex flex-col items-center p-2 ${isActivePath('/dashboard') ? 'text-blue-400' : 'text-gray-400'}`}>
               <Wallet className="h-6 w-6" />
               <span className="text-xs mt-1">Dashboard</span>
             </Link>

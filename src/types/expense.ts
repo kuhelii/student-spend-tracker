@@ -13,6 +13,7 @@ export interface Expense {
   category: ExpenseCategory;
   description: string;
   date: string;
+  user_id?: string;
 }
 
 export interface BudgetSummary {

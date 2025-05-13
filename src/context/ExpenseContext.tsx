@@ -1,8 +1,11 @@
 
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { ExpenseState, Expense, TimeFrame } from '@/types/expense';
-import { calculateBudgetSummary, calculateCategorySummaries, getSampleExpenses, getRandomId } from '@/lib/expenseUtils';
+import { calculateBudgetSummary, calculateCategorySummaries, getRandomId } from '@/lib/expenseUtils';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from './AuthContext';
+import { format } from 'date-fns';
 
 // Define action types
 type ExpenseAction = 
@@ -10,7 +13,8 @@ type ExpenseAction =
   | { type: 'REMOVE_EXPENSE'; payload: string }
   | { type: 'SET_BUDGET'; payload: number }
   | { type: 'SET_TIME_FRAME'; payload: TimeFrame }
-  | { type: 'LOAD_INITIAL_DATA' };
+  | { type: 'SET_EXPENSES'; payload: Expense[] }
+  | { type: 'INITIALIZE' };
 
 // Initial state
 const initialState: ExpenseState = {
@@ -84,19 +88,26 @@ const expenseReducer = (state: ExpenseState, action: ExpenseAction): ExpenseStat
       };
     }
     
-    case 'LOAD_INITIAL_DATA': {
-      const sampleExpenses = getSampleExpenses();
+    case 'SET_EXPENSES': {
+      const expenses = action.payload;
       
       return {
         ...state,
-        expenses: sampleExpenses,
+        expenses,
         summaryData: {
-          daily: calculateBudgetSummary(sampleExpenses, state.budget, 'daily'),
-          weekly: calculateBudgetSummary(sampleExpenses, state.budget, 'weekly'),
-          monthly: calculateBudgetSummary(sampleExpenses, state.budget, 'monthly'),
-          yearly: calculateBudgetSummary(sampleExpenses, state.budget, 'yearly'),
+          daily: calculateBudgetSummary(expenses, state.budget, 'daily'),
+          weekly: calculateBudgetSummary(expenses, state.budget, 'weekly'),
+          monthly: calculateBudgetSummary(expenses, state.budget, 'monthly'),
+          yearly: calculateBudgetSummary(expenses, state.budget, 'yearly'),
         },
-        categorySummaries: calculateCategorySummaries(sampleExpenses, state.timeFrame)
+        categorySummaries: calculateCategorySummaries(expenses, state.timeFrame)
+      };
+    }
+    
+    case 'INITIALIZE': {
+      return {
+        ...initialState,
+        categorySummaries: calculateCategorySummaries([], initialState.timeFrame)
       };
     }
     
@@ -108,10 +119,11 @@ const expenseReducer = (state: ExpenseState, action: ExpenseAction): ExpenseStat
 // Create context
 type ExpenseContextType = {
   state: ExpenseState;
-  addExpense: (expense: Omit<Expense, 'id'>) => void;
-  removeExpense: (id: string) => void;
+  addExpense: (expense: Omit<Expense, 'id'>) => Promise<void>;
+  removeExpense: (id: string) => Promise<void>;
   setBudget: (amount: number) => void;
   setTimeFrame: (timeFrame: TimeFrame) => void;
+  fetchExpenses: () => Promise<void>;
 };
 
 const ExpenseContext = createContext<ExpenseContextType | undefined>(undefined);
@@ -120,26 +132,123 @@ const ExpenseContext = createContext<ExpenseContextType | undefined>(undefined);
 export const ExpenseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(expenseReducer, initialState);
   const { toast } = useToast();
+  const { user } = useAuth();
   
+  // Fetch expenses when user changes
   useEffect(() => {
-    // Load initial sample data
-    dispatch({ type: 'LOAD_INITIAL_DATA' });
-  }, []);
+    if (user) {
+      fetchExpenses();
+    } else {
+      // Reset state when logged out
+      dispatch({ type: 'INITIALIZE' });
+    }
+  }, [user]);
   
-  const addExpense = (expense: Omit<Expense, 'id'>) => {
-    dispatch({ type: 'ADD_EXPENSE', payload: expense });
-    toast({
-      title: "Expense added",
-      description: `${expense.description} - $${expense.amount}`,
-    });
+  const fetchExpenses = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('expenses')
+        .select('*')
+        .order('date', { ascending: false });
+        
+      if (error) throw error;
+      
+      if (data) {
+        const formattedExpenses: Expense[] = data.map(item => ({
+          id: item.id,
+          amount: Number(item.amount),
+          category: item.category as any,
+          description: item.description,
+          date: format(new Date(item.date), 'yyyy-MM-dd'),
+        }));
+        
+        dispatch({ type: 'SET_EXPENSES', payload: formattedExpenses });
+      }
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
+      toast({
+        title: "Error loading expenses",
+        description: "There was a problem loading your expenses.",
+        variant: "destructive"
+      });
+    }
   };
   
-  const removeExpense = (id: string) => {
-    dispatch({ type: 'REMOVE_EXPENSE', payload: id });
-    toast({
-      title: "Expense removed",
-      description: "The expense has been removed successfully",
-    });
+  const addExpense = async (expense: Omit<Expense, 'id'>) => {
+    if (!user) return;
+    
+    try {
+      // Save to Supabase
+      const { data, error } = await supabase
+        .from('expenses')
+        .insert([{
+          user_id: user.id,
+          amount: expense.amount,
+          category: expense.category,
+          description: expense.description,
+          date: new Date(expense.date).toISOString(),
+        }])
+        .select('*')
+        .single();
+        
+      if (error) throw error;
+      
+      if (data) {
+        const newExpense: Expense = {
+          id: data.id,
+          amount: Number(data.amount),
+          category: data.category as any,
+          description: data.description,
+          date: format(new Date(data.date), 'yyyy-MM-dd'),
+        };
+        
+        // Update local state
+        dispatch({ type: 'ADD_EXPENSE', payload: newExpense });
+        
+        toast({
+          title: "Expense added",
+          description: `${expense.description} - $${expense.amount}`,
+        });
+      }
+    } catch (error: any) {
+      console.error('Error adding expense:', error);
+      toast({
+        title: "Error adding expense",
+        description: error.message || "There was a problem adding your expense.",
+        variant: "destructive"
+      });
+    }
+  };
+  
+  const removeExpense = async (id: string) => {
+    if (!user) return;
+    
+    try {
+      // Delete from Supabase
+      const { error } = await supabase
+        .from('expenses')
+        .delete()
+        .eq('id', id);
+        
+      if (error) throw error;
+      
+      // Update local state
+      dispatch({ type: 'REMOVE_EXPENSE', payload: id });
+      
+      toast({
+        title: "Expense removed",
+        description: "The expense has been removed successfully",
+      });
+    } catch (error: any) {
+      console.error('Error removing expense:', error);
+      toast({
+        title: "Error removing expense",
+        description: error.message || "There was a problem removing your expense.",
+        variant: "destructive"
+      });
+    }
   };
   
   const setBudget = (amount: number) => {
@@ -155,7 +264,14 @@ export const ExpenseProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
   
   return (
-    <ExpenseContext.Provider value={{ state, addExpense, removeExpense, setBudget, setTimeFrame }}>
+    <ExpenseContext.Provider value={{ 
+      state, 
+      addExpense, 
+      removeExpense, 
+      setBudget, 
+      setTimeFrame,
+      fetchExpenses
+    }}>
       {children}
     </ExpenseContext.Provider>
   );
