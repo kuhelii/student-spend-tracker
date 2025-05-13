@@ -79,7 +79,7 @@ const TrendChart: React.FC = () => {
               <XAxis dataKey="day" />
               <YAxis />
               <Tooltip 
-                formatter={(value: number) => [`$${value.toFixed(2)}`, 'Amount']}
+                formatter={(value: number) => [`${value.toFixed(2)}`, 'Amount']}
                 labelFormatter={(day) => `Day ${day}`}
               />
               <Legend />

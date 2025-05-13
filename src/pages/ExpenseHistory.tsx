@@ -148,8 +148,8 @@ const ExpenseHistory: React.FC = () => {
           <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
             <p className="text-sm text-gray-500">
               {filteredExpenses.length === state.expenses.length 
-                ? `Showing all {state.expenses.length} expenses` 
-                : `Showing {filteredExpenses.length} of {state.expenses.length} expenses`
+                ? `Showing all ${state.expenses.length} expenses` 
+                : `Showing ${filteredExpenses.length} of ${state.expenses.length} expenses`
               }
             </p>
           </div>

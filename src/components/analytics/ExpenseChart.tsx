@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { CATEGORY_COLORS } from '@/lib/expenseUtils';
+import { CATEGORY_COLORS, formatCurrency } from '@/lib/expenseUtils';
 import { ChartPie } from 'lucide-react';
 
 const ExpenseChart: React.FC = () => {
@@ -75,7 +75,7 @@ const ExpenseChart: React.FC = () => {
                 </Pie>
                 <Legend layout="horizontal" verticalAlign="bottom" align="center" />
                 <Tooltip 
-                  formatter={(value: number) => [`$${value.toFixed(2)}`, 'Amount']}
+                  formatter={(value: number) => [`${value.toFixed(2)}`, 'Amount']}
                   labelFormatter={(name) => `Category: ${name}`}
                 />
               </PieChart>
@@ -94,7 +94,7 @@ const ExpenseChart: React.FC = () => {
                   style={{ backgroundColor: CATEGORY_COLORS[summary.category]?.light }}
                 >
                   <div className="text-sm capitalize">{summary.category}</div>
-                  <div className="font-semibold">${summary.amount.toFixed(2)}</div>
+                  <div className="font-semibold">{formatCurrency(summary.amount)}</div>
                   <div className="text-xs text-gray-500">
                     {summary.percentage.toFixed(1)}% • {summary.count} items
                   </div>
