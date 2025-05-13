@@ -46,14 +46,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in.",
+      toast("Welcome back!", {
+        description: "You have successfully signed in."
       });
       navigate('/dashboard');
     } catch (error: any) {
-      toast({
-        title: "Sign in failed",
+      toast("Sign in failed", {
         description: error.message,
         variant: "destructive"
       });
@@ -64,14 +62,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const { error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
-      toast({
-        title: "Account created!",
-        description: "Please check your email for verification instructions.",
+      toast("Account created!", {
+        description: "Please check your email for verification instructions."
       });
       navigate('/auth');
     } catch (error: any) {
-      toast({
-        title: "Sign up failed",
+      toast("Sign up failed", {
         description: error.message,
         variant: "destructive"
       });
@@ -81,14 +77,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
-      toast({
-        title: "Signed out",
-        description: "You have been signed out successfully.",
+      toast("Signed out", {
+        description: "You have been signed out successfully."
       });
       navigate('/auth');
     } catch (error: any) {
-      toast({
-        title: "Sign out failed",
+      toast("Sign out failed", {
         description: error.message,
         variant: "destructive"
       });
