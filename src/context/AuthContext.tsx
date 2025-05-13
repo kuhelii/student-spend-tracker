@@ -52,8 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       navigate('/dashboard');
     } catch (error: any) {
       toast("Sign in failed", {
-        description: error.message,
-        variant: "destructive"
+        description: error.message
       });
     }
   };
@@ -68,8 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       navigate('/auth');
     } catch (error: any) {
       toast("Sign up failed", {
-        description: error.message,
-        variant: "destructive"
+        description: error.message
       });
     }
   };
@@ -83,8 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       navigate('/auth');
     } catch (error: any) {
       toast("Sign out failed", {
-        description: error.message,
-        variant: "destructive"
+        description: error.message
       });
     }
   };
