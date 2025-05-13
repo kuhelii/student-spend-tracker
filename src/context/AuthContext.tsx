@@ -27,29 +27,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log("Auth state changed:", event);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
+        
+        // Automatically redirect on auth events
+        if (event === 'SIGNED_IN') {
+          toast("Welcome back!", {
+            description: "You have successfully signed in."
+          });
+          navigate('/dashboard');
+        } else if (event === 'SIGNED_OUT') {
+          navigate('/auth');
+        }
       }
     );
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Retrieved session:", currentSession ? "exists" : "none");
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
   const signIn = async (email: string, password: string) => {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      toast("Welcome back!", {
-        description: "You have successfully signed in."
-      });
-      navigate('/dashboard');
+      // Navigation happens in onAuthStateChange
     } catch (error: any) {
       toast("Sign in failed", {
         description: error.message
@@ -78,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       toast("Signed out", {
         description: "You have been signed out successfully."
       });
-      navigate('/auth');
+      // Navigation happens in onAuthStateChange
     } catch (error: any) {
       toast("Sign out failed", {
         description: error.message
