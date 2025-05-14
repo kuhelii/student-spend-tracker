@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/context/AuthContext';
-import { toast } from '@/components/ui/sonner';
+import { toast } from '@/hooks/use-toast';
 
 const Auth = () => {
   const { user, signIn, signUp, loading } = useAuth();
@@ -26,7 +26,8 @@ const Auth = () => {
   // Enhanced redirect to ensure it works properly
   useEffect(() => {
     if (!loading && user) {
-      toast("Successfully authenticated", {
+      toast({
+        title: "Successfully authenticated",
         description: "Redirecting you to dashboard..."
       });
       navigate('/dashboard', { replace: true });
@@ -38,6 +39,10 @@ const Auth = () => {
     setIsSubmitting(true);
     try {
       await signIn(email, password);
+      // Navigation is handled in the useEffect
+    } catch (error) {
+      // Error is handled in the AuthContext
+      console.error("Sign in error:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -48,6 +53,10 @@ const Auth = () => {
     setIsSubmitting(true);
     try {
       await signUp(email, password);
+      // Navigation is handled in the useEffect or in AuthContext
+    } catch (error) {
+      // Error is handled in the AuthContext
+      console.error("Sign up error:", error);
     } finally {
       setIsSubmitting(false);
     }
