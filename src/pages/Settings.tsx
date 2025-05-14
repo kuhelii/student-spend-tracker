@@ -13,34 +13,29 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useExpense } from '@/context/ExpenseContext';
 import { formatCurrency } from '@/lib/expenseUtils';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from '@/components/ui/sonner';
 
 const Settings: React.FC = () => {
   const { state, setBudget } = useExpense();
-  const { toast } = useToast();
   const [budgetValue, setBudgetValue] = React.useState(state.budget.toString());
   
   const handleBudgetUpdate = () => {
     const newBudget = parseFloat(budgetValue);
     if (!isNaN(newBudget) && newBudget > 0) {
       setBudget(newBudget);
-      toast({
-        title: "Budget updated",
+      toast("Budget updated", {
         description: `Your budget has been set to ${formatCurrency(newBudget)}`,
       });
     } else {
-      toast({
-        title: "Invalid budget value",
-        description: "Please enter a valid positive number",
-        variant: "destructive",
+      toast("Invalid budget value", {
+        description: "Please enter a valid positive number"
       });
     }
   };
   
   const handleClearLocalData = () => {
     // In a real app, this would clear local storage
-    toast({
-      title: "Data cleared",
+    toast("Data cleared", {
       description: "All your local data has been cleared",
     });
   };

@@ -1,8 +1,7 @@
-
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { ExpenseState, Expense, TimeFrame } from '@/types/expense';
 import { calculateBudgetSummary, calculateCategorySummaries, getRandomId } from '@/lib/expenseUtils';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from '@/components/ui/sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './AuthContext';
 import { format } from 'date-fns';
@@ -131,7 +130,6 @@ const ExpenseContext = createContext<ExpenseContextType | undefined>(undefined);
 // Provider component
 export const ExpenseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(expenseReducer, initialState);
-  const { toast } = useToast();
   const { user } = useAuth();
   
   // Fetch expenses when user changes
@@ -168,10 +166,8 @@ export const ExpenseProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     } catch (error) {
       console.error('Error fetching expenses:', error);
-      toast({
-        title: "Error loading expenses",
-        description: "There was a problem loading your expenses.",
-        variant: "destructive"
+      toast("Error loading expenses", {
+        description: "There was a problem loading your expenses."
       });
     }
   };
@@ -207,17 +203,14 @@ export const ExpenseProvider: React.FC<{ children: React.ReactNode }> = ({ child
         // Update local state
         dispatch({ type: 'ADD_EXPENSE', payload: newExpense });
         
-        toast({
-          title: "Expense added",
+        toast("Expense added", {
           description: `${expense.description} - $${expense.amount}`,
         });
       }
     } catch (error: any) {
       console.error('Error adding expense:', error);
-      toast({
-        title: "Error adding expense",
-        description: error.message || "There was a problem adding your expense.",
-        variant: "destructive"
+      toast("Error adding expense", {
+        description: error.message || "There was a problem adding your expense."
       });
     }
   };
@@ -237,24 +230,20 @@ export const ExpenseProvider: React.FC<{ children: React.ReactNode }> = ({ child
       // Update local state
       dispatch({ type: 'REMOVE_EXPENSE', payload: id });
       
-      toast({
-        title: "Expense removed",
+      toast("Expense removed", {
         description: "The expense has been removed successfully",
       });
     } catch (error: any) {
       console.error('Error removing expense:', error);
-      toast({
-        title: "Error removing expense",
-        description: error.message || "There was a problem removing your expense.",
-        variant: "destructive"
+      toast("Error removing expense", {
+        description: error.message || "There was a problem removing your expense."
       });
     }
   };
   
   const setBudget = (amount: number) => {
     dispatch({ type: 'SET_BUDGET', payload: amount });
-    toast({
-      title: "Budget updated",
+    toast("Budget updated", {
       description: `Your budget has been set to $${amount}`,
     });
   };
