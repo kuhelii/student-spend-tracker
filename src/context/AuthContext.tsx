@@ -38,6 +38,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
           navigate('/dashboard');
         } else if (event === 'SIGNED_OUT') {
+          console.log("SIGNED_OUT event received, redirecting to auth page");
+          // Force navigation to auth page even if onAuthStateChange doesn't trigger properly
           navigate('/auth', { replace: true });
         }
       }
@@ -102,14 +104,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      console.log("Signing out user");
+      // First clear local states
+      setSession(null);
+      setUser(null);
+      
+      // Then sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) throw error;
+      
       toast("Signed out", {
         description: "You have been signed out successfully."
       });
-      // Force navigation to auth page
+      
+      // Force navigation to auth page before onAuthStateChange can trigger
+      console.log("Navigating to auth page after sign out");
       navigate('/auth', { replace: true });
-      // onAuthStateChange will also trigger a redirect
     } catch (error: any) {
+      console.error("Sign out error:", error);
       toast("Sign out failed", {
         description: error.message
       });

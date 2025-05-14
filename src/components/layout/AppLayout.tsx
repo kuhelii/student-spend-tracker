@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, Link, Navigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { 
@@ -28,6 +28,18 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
+
+  // Handle sign out with error handling
+  const handleSignOut = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log("Sign out button clicked");
+    try {
+      await signOut();
+      // Navigation is handled in the AuthContext
+    } catch (error) {
+      console.error("Error during sign out:", error);
+    }
+  };
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -92,7 +104,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                   {user.email}
                 </div>
                 <button
-                  onClick={() => signOut()}
+                  onClick={handleSignOut}
                   className="flex w-full items-center px-4 py-2 rounded-md text-gray-300 hover:bg-gray-700 transition-colors"
                   aria-label="Sign out"
                 >
