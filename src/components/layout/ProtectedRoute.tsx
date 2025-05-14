@@ -1,10 +1,18 @@
 
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 
 const ProtectedRoute: React.FC = () => {
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  // Extra security check to handle session expiration
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth', { replace: true });
+    }
+  }, [user, loading, navigate]);
 
   // Show loading state while checking authentication
   if (loading) {

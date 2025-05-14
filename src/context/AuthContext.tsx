@@ -38,7 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
           navigate('/dashboard');
         } else if (event === 'SIGNED_OUT') {
-          navigate('/auth');
+          navigate('/auth', { replace: true });
         }
       }
     );
@@ -56,7 +56,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ 
+        email, 
+        password 
+      });
+      
       if (error) throw error;
       // Navigation happens in onAuthStateChange
     } catch (error: any) {
@@ -73,17 +77,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email, 
         password,
         options: {
-          // Skip email verification by automatically signing in after signup
+          // Redirect URL for email verification if needed
           emailRedirectTo: window.location.origin + '/auth',
-          data: {
-            email_confirmed: true
-          }
         }
       });
       
       if (signUpError) throw signUpError;
       
-      // Immediately sign in after successful sign up
       toast("Account created!", {
         description: "You've been automatically signed in."
       });
@@ -106,7 +106,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       toast("Signed out", {
         description: "You have been signed out successfully."
       });
-      // Navigation happens in onAuthStateChange
+      // Force navigation to auth page
+      navigate('/auth', { replace: true });
+      // onAuthStateChange will also trigger a redirect
     } catch (error: any) {
       toast("Sign out failed", {
         description: error.message

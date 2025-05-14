@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, Navigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   ChartBar, 
@@ -23,6 +23,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const isActivePath = (path: string) => {
     return location.pathname === path;
   };
+
+  // Security check: Redirect to auth page if no user is found
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -83,12 +88,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
             {user && (
               <div className="absolute bottom-8 left-0 right-0 px-4">
-                <div className="px-4 py-2 text-sm text-gray-300 mb-2">
+                <div className="px-4 py-2 text-sm text-gray-300 mb-2 truncate">
                   {user.email}
                 </div>
                 <button
                   onClick={() => signOut()}
                   className="flex w-full items-center px-4 py-2 rounded-md text-gray-300 hover:bg-gray-700 transition-colors"
+                  aria-label="Sign out"
                 >
                   <LogOut className="h-5 w-5 mr-3" />
                   <span>Sign Out</span>

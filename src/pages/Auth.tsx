@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { 
@@ -34,6 +35,13 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      toast("Missing information", {
+        description: "Please enter both email and password"
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     try {
       await signIn(email, password);
@@ -48,6 +56,20 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      toast("Missing information", {
+        description: "Please enter both email and password"
+      });
+      return;
+    }
+    
+    if (password.length < 6) {
+      toast("Password too short", {
+        description: "Password must be at least 6 characters long"
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     try {
       await signUp(email, password);
@@ -103,6 +125,7 @@ const Auth = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required 
+                      autoComplete="email"
                     />
                   </div>
                   <div className="space-y-2">
@@ -114,6 +137,7 @@ const Auth = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required 
+                      autoComplete="current-password"
                     />
                   </div>
                   <Button 
@@ -139,6 +163,7 @@ const Auth = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required 
+                      autoComplete="email"
                     />
                   </div>
                   <div className="space-y-2">
@@ -150,6 +175,7 @@ const Auth = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required 
+                      autoComplete="new-password"
                     />
                   </div>
                   <Button 
