@@ -1,10 +1,10 @@
-import { toast as sonnerToast, type Toast as SonnerToast } from "sonner";
+import { toast as sonnerToast, ToastT } from "sonner";
 
-type ToastProps = SonnerToast & {
+type ToastProps = {
   title?: string;
   description?: string;
   action?: React.ReactNode;
-};
+} & Omit<Parameters<typeof sonnerToast>[1], 'description' | 'action'>;
 
 const useToast = () => {
   const toast = (props: ToastProps | string) => {
