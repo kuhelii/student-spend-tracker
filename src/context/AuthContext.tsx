@@ -68,12 +68,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signUp({ email, password });
-      if (error) throw error;
-      toast("Account created!", {
-        description: "Please check your email for verification instructions."
+      // Changed to directly sign in after sign up
+      const { error: signUpError } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          // Skip email verification by automatically signing in after signup
+          emailRedirectTo: window.location.origin + '/auth',
+          data: {
+            email_confirmed: true
+          }
+        }
       });
-      navigate('/auth');
+      
+      if (signUpError) throw signUpError;
+      
+      // Immediately sign in after successful sign up
+      toast("Account created!", {
+        description: "You've been automatically signed in."
+      });
+      
+      // Try to sign in immediately
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) throw signInError;
+      
+      // Navigation happens in onAuthStateChange
     } catch (error: any) {
       toast("Sign up failed", {
         description: error.message
