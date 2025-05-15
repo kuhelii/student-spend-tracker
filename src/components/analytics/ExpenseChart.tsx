@@ -14,7 +14,7 @@ import { ChartPie } from 'lucide-react';
 const ExpenseChart: React.FC = () => {
   const { state } = useExpense();
   const { categorySummaries } = state;
-  
+
   // Filter out categories with zero amount
   const chartData = categorySummaries
     .filter(summary => summary.amount > 0)
@@ -23,22 +23,22 @@ const ExpenseChart: React.FC = () => {
       value: summary.amount,
       percentage: summary.percentage
     }));
-  
+
   // Generate pie chart color cells
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
     const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-    
+
     if (percent < 0.05) return null;
-    
+
     return (
       <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="middle" fontSize={12} fontWeight="bold">
         {`${(percent * 100).toFixed(0)}%`}
       </text>
     );
   };
-  
+
   return (
     <Card className="shadow-md">
       <CardHeader className="pb-3">
@@ -82,21 +82,45 @@ const ExpenseChart: React.FC = () => {
             </ResponsiveContainer>
           </div>
         )}
-        
+
+        {/* Improved breakdown cards for better dark/light mode */}
         {chartData.length > 0 && (
-          <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
             {categorySummaries
               .filter(summary => summary.amount > 0)
               .map(summary => (
-                <div 
-                  key={summary.category} 
-                  className="flex flex-col items-center p-2 rounded-md"
-                  style={{ backgroundColor: CATEGORY_COLORS[summary.category]?.light }}
+                <div
+                  key={summary.category}
+                  className={`
+                    w-full flex flex-col items-center 
+                    rounded-xl px-3 py-2
+                    shadow
+                    glass-morphism
+                    transition
+                    bg-white/70
+                    dark:bg-purple-950/70
+                    backdrop-blur-md
+                    border border-white/30 dark:border-purple-900/60
+                  `}
                 >
-                  <div className="text-sm capitalize">{summary.category}</div>
-                  <div className="font-semibold">{formatCurrency(summary.amount)}</div>
-                  <div className="text-xs text-gray-500">
-                    {summary.percentage.toFixed(1)}% • {summary.count} items
+                  <div
+                    className={`
+                      text-xs font-bold capitalize tracking-wide
+                      mb-1
+                      ${summary.category === 'other'
+                        ? 'text-gray-600 dark:text-gray-200'
+                        : ''}
+                    `}
+                  >
+                    {summary.category}
+                  </div>
+                  <div className="text-lg font-semibold text-gray-900 dark:text-purple-100">
+                    {formatCurrency(summary.amount)}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-purple-200 flex gap-1">
+                    <span>{summary.percentage.toFixed(1)}%</span>
+                    <span>&bull;</span>
+                    <span>{summary.count} {summary.count === 1 ? 'item' : 'items'}</span>
                   </div>
                 </div>
               ))}
@@ -108,3 +132,4 @@ const ExpenseChart: React.FC = () => {
 };
 
 export default ExpenseChart;
+
