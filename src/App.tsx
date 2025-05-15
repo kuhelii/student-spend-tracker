@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import React from "react";
+import { ThemeProvider } from "@/components/layout/ThemeProvider";
 
 const App = () => {
   // Create a new QueryClient instance inside the component
@@ -22,32 +23,34 @@ const App = () => {
   
   return (
     <React.StrictMode>
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <AuthProvider>
-              <ExpenseProvider>
-                <Toaster />
-                <Sonner />
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<Auth />} />
-                  
-                  {/* Protected routes */}
-                  <Route element={<ProtectedRoute />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/history" element={<ExpenseHistory />} />
-                    <Route path="/analytics" element={<Analytics />} />
-                    <Route path="/settings" element={<Settings />} />
-                  </Route>
-                  
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </ExpenseProvider>
-            </AuthProvider>
-          </TooltipProvider>
-        </QueryClientProvider>
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter>
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              <AuthProvider>
+                <ExpenseProvider>
+                  <Toaster />
+                  <Sonner />
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/auth" element={<Auth />} />
+                    
+                    {/* Protected routes */}
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/history" element={<ExpenseHistory />} />
+                      <Route path="/analytics" element={<Analytics />} />
+                      <Route path="/settings" element={<Settings />} />
+                    </Route>
+                    
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </ExpenseProvider>
+              </AuthProvider>
+            </TooltipProvider>
+          </QueryClientProvider>
+        </BrowserRouter>
+      </ThemeProvider>
     </React.StrictMode>
   );
 };
