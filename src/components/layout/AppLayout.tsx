@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useLocation, Link, Navigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -10,6 +9,7 @@ import {
   LogOut 
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import ThemeToggle from "./ThemeToggle";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -42,12 +42,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-background transition-colors">
       {/* Desktop sidebar */}
       {!isMobile && (
         <div className="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-gray-800 to-gray-900 border-r border-gray-700 shadow-lg">
-          <div className="flex items-center justify-center h-16 border-b border-gray-700">
+          <div className="flex items-center justify-between h-16 border-b border-gray-700 px-4">
             <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">BudgetBuddy</h1>
+            <ThemeToggle />
           </div>
           
           <nav className="mt-6 px-4">
@@ -126,7 +127,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         
         {/* Mobile bottom navigation */}
         {isMobile && (
-          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-800 to-gray-900 px-4 py-2 flex justify-around shadow-lg">
+          <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-800 to-gray-900 px-4 py-2 flex justify-around shadow-lg z-50">
             <Link to="/dashboard" className={`flex flex-col items-center p-2 ${isActivePath('/dashboard') ? 'text-blue-400' : 'text-gray-400'}`}>
               <Wallet className="h-6 w-6" />
               <span className="text-xs mt-1">Dashboard</span>
@@ -143,6 +144,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <SettingsIcon className="h-6 w-6" />
               <span className="text-xs mt-1">Settings</span>
             </Link>
+            <ThemeToggle />
           </div>
         )}
       </div>
