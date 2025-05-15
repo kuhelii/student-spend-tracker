@@ -37,53 +37,58 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 258 60% 9%;         /* Deep purple/navy */
+    --foreground: 220 15% 85%;        /* Light gray for text */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 257 48% 14%;              /* Glass dark purple */
+    --card-foreground: 220 15% 90%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 258 60% 10%;
+    --popover-foreground: 220 15% 85%;
 
-    --primary: 255 80% 75%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 267 89% 77%;
+    --primary-foreground: 252 25% 20%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 253 33% 18%;
+    --secondary-foreground: 260 15% 88%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 257 40% 15%;
+    --muted-foreground: 221 14% 50%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 266 66% 33%;
+    --accent-foreground: 220 15% 90%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 35.6%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 258 36% 22%;
+    --input: 258 36% 22%;
+    --ring: 275 75% 82%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border selection:bg-primary/30 selection:text-white;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased transition-colors;
   }
 }
 
-.expense-card {
-  transition: all 0.3s ease;
+.glass-morphism {
+  @apply backdrop-blur-xl bg-white/5 dark:bg-purple-950/30 border border-white/10 dark:border-white/10 rounded-xl shadow-[0_4px_12px_-2px_rgba(155,135,245,0.15)];
 }
 
+.card,
+.expense-card {
+  @apply glass-morphism;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
 .expense-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(155, 135, 245, 0.2);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 28px 0 rgba(125, 101, 232, 0.22);
 }
 
 .category-badge {
@@ -91,27 +96,22 @@
 }
 
 .category-food {
-  @apply bg-orange-100 text-orange-800;
+  @apply bg-orange-100 text-orange-800 dark:bg-orange-900/80 dark:text-orange-200;
 }
-
 .category-transport {
-  @apply bg-blue-100 text-blue-800;
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900/80 dark:text-blue-200;
 }
-
 .category-entertainment {
-  @apply bg-purple-100 text-purple-800;
+  @apply bg-purple-100 text-purple-800 dark:bg-purple-900/80 dark:text-purple-200;
 }
-
 .category-shopping {
-  @apply bg-pink-100 text-pink-800;
+  @apply bg-pink-100 text-pink-800 dark:bg-pink-900/80 dark:text-pink-200;
 }
-
 .category-utilities {
-  @apply bg-green-100 text-green-800;
+  @apply bg-green-100 text-green-800 dark:bg-green-900/80 dark:text-green-200;
 }
-
 .category-other {
-  @apply bg-gray-100 text-gray-800;
+  @apply bg-gray-100 text-gray-800 dark:bg-slate-800/70 dark:text-gray-300;
 }
 
 .animated-number {
@@ -128,3 +128,4 @@
     transform: translateY(0);
   }
 }
+
