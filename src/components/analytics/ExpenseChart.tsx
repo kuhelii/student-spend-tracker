@@ -83,47 +83,65 @@ const ExpenseChart: React.FC = () => {
           </div>
         )}
 
-        {/* Improved breakdown cards for better dark/light mode */}
+        {/* Improved breakdown cards for better color and readability */}
         {chartData.length > 0 && (
           <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
             {categorySummaries
               .filter(summary => summary.amount > 0)
-              .map(summary => (
-                <div
-                  key={summary.category}
-                  className={`
-                    w-full flex flex-col items-center 
-                    rounded-xl px-3 py-2
-                    shadow
-                    glass-morphism
-                    transition
-                    bg-white/70
-                    dark:bg-purple-950/70
-                    backdrop-blur-md
-                    border border-white/30 dark:border-purple-900/60
-                  `}
-                >
+              .map(summary => {
+                const color =
+                  CATEGORY_COLORS[summary.category.toLowerCase() as keyof typeof CATEGORY_COLORS]
+                    ?.dark || '#8884d8';
+                return (
                   <div
+                    key={summary.category}
                     className={`
-                      text-xs font-bold capitalize tracking-wide
-                      mb-1
-                      ${summary.category === 'other'
-                        ? 'text-gray-600 dark:text-gray-200'
-                        : ''}
+                      w-full flex flex-col items-center 
+                      rounded-xl px-3 py-2
+                      shadow
+                      glass-morphism
+                      transition
+                      bg-white/70
+                      dark:bg-purple-950/70
+                      backdrop-blur-md
+                      border border-white/30 dark:border-purple-900/60
                     `}
                   >
-                    {summary.category}
+                    <div className="flex items-center gap-1 mb-1">
+                      {/* Colored dot accent for the category */}
+                      <span
+                        className="inline-block w-3 h-3 rounded-full"
+                        style={{
+                          backgroundColor: color,
+                          border: '2px solid rgba(255,255,255,0.7)',
+                        }}
+                      />
+                      <span
+                        className={`
+                          text-xs font-bold capitalize tracking-wide
+                          ${
+                            summary.category === "other"
+                              ? "text-gray-700 dark:text-gray-100"
+                              : "text-gray-800 dark:text-white"
+                          }
+                        `}
+                      >
+                        {summary.category}
+                      </span>
+                    </div>
+                    <div className="text-lg font-semibold text-gray-900 dark:text-purple-100">
+                      {formatCurrency(summary.amount)}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-purple-200 flex gap-1">
+                      <span>{summary.percentage.toFixed(1)}%</span>
+                      <span>&bull;</span>
+                      <span>
+                        {summary.count} {summary.count === 1 ? "item" : "items"}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-lg font-semibold text-gray-900 dark:text-purple-100">
-                    {formatCurrency(summary.amount)}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-purple-200 flex gap-1">
-                    <span>{summary.percentage.toFixed(1)}%</span>
-                    <span>&bull;</span>
-                    <span>{summary.count} {summary.count === 1 ? 'item' : 'items'}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
           </div>
         )}
       </CardContent>
@@ -132,4 +150,3 @@ const ExpenseChart: React.FC = () => {
 };
 
 export default ExpenseChart;
-
