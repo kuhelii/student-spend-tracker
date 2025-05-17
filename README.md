@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**:
+**URL**:https://student-spend-tracker.vercel.app/
 
 
 **Use your preferred IDE**
