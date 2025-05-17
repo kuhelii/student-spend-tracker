@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useExpense } from '@/context/ExpenseContext';
 import {
@@ -69,7 +68,10 @@ const ExpenseChart: React.FC = () => {
                   {chartData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={CATEGORY_COLORS[entry.name.toLowerCase() as keyof typeof CATEGORY_COLORS]?.dark || '#8884d8'} 
+                      fill={
+                        CATEGORY_COLORS[entry.name.toLowerCase() as keyof typeof CATEGORY_COLORS]?.dark
+                        || '#8884d8'
+                      }
                     />
                   ))}
                 </Pie>
@@ -83,7 +85,7 @@ const ExpenseChart: React.FC = () => {
           </div>
         )}
 
-        {/* Improved breakdown cards for better color and readability */}
+        {/* Category breakdown cards: update ONLY dark mode appearance */}
         {chartData.length > 0 && (
           <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
             {categorySummaries
@@ -96,19 +98,17 @@ const ExpenseChart: React.FC = () => {
                   <div
                     key={summary.category}
                     className={`
-                      w-full flex flex-col items-center 
-                      rounded-xl px-3 py-2
-                      shadow
-                      glass-morphism
-                      transition
-                      bg-white/70
-                      dark:bg-purple-950/70
-                      backdrop-blur-md
-                      border border-white/30 dark:border-purple-900/60
+                      w-full flex flex-col items-center
+                      rounded-xl px-3 py-2 shadow transition
+                      border
+                      ${/* LIGHT MODE = white card, as before */''}
+                      bg-white/70 border-white/30
+                      ${/* DARK MODE = glassy deep purple/black card with better white text */''}
+                      dark:bg-[#241450e6] dark:backdrop-blur-md dark:border-purple-900/60
                     `}
                   >
                     <div className="flex items-center gap-1 mb-1">
-                      {/* Colored dot accent for the category */}
+                      {/* Colored dot matches Pie color */}
                       <span
                         className="inline-block w-3 h-3 rounded-full"
                         style={{
@@ -119,17 +119,14 @@ const ExpenseChart: React.FC = () => {
                       <span
                         className={`
                           text-xs font-bold capitalize tracking-wide
-                          ${
-                            summary.category === "other"
-                              ? "text-gray-700 dark:text-gray-100"
-                              : "text-gray-800 dark:text-white"
-                          }
+                          text-gray-800
+                          dark:text-white
                         `}
                       >
                         {summary.category}
                       </span>
                     </div>
-                    <div className="text-lg font-semibold text-gray-900 dark:text-purple-100">
+                    <div className="text-lg font-semibold text-gray-900 dark:text-white">
                       {formatCurrency(summary.amount)}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-purple-200 flex gap-1">
