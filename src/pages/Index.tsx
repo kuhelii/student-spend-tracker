@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -24,15 +25,18 @@ const Index = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-background dark:to-purple-900/40 transition-colors">
       <header className="container mx-auto py-6 px-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             BudgetBuddy
           </h1>
-          <Button variant="outline" onClick={() => navigate('/auth')}>
-            Sign In
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button variant="outline" onClick={() => navigate('/auth')}>
+              Sign In
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -42,7 +46,7 @@ const Index = () => {
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Take Control of Your Finances
             </h2>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               Track expenses, set budgets, and gain insights into your spending habits with our intuitive expense tracker.
             </p>
             <Button 
@@ -57,7 +61,7 @@ const Index = () => {
       </main>
 
       <footer className="container mx-auto py-6 px-4 mt-auto">
-        <div className="text-center text-gray-500 text-sm">
+        <div className="text-center text-gray-500 text-sm dark:text-gray-400">
           &copy; 2025 BudgetBuddy. All rights reserved.
         </div>
       </footer>
